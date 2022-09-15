@@ -1,30 +1,48 @@
-import { View, Image, FlatList } from "react-native";
+import { Image, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { styles } from "./styles";
 
+import { Background } from "../../components/Background";
 import logoImg from "../../assets/logo-nlw-esports.png";
 import { Heading } from "../../components/Heading";
-import { GameCard } from "../../components/GameCard";
+import { GameCard, IGameCardProps } from "../../components/GameCard";
+import { useNavigation } from '@react-navigation/native'
 
-import { GAMES } from "../../utils/games";
+import { useEffect, useState } from "react";
+import { api } from "../../utils/fetch";
 
 export function Home() {
-  return (
-    <View style={styles.container}>
-      <Image source={logoImg} style={styles.logo} />
-      <Heading
-        title="Encontre seu duo!"
-        subtitle="Selecione o game que deseja jogar..."
-      />
+  const [games, setGames] = useState<IGameCardProps[]>([]);
 
-      <FlatList
-        data={GAMES}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <GameCard data={item} />}
-        contentContainerStyle={styles.contentList}
-        showsHorizontalScrollIndicator={false}
-        horizontal
-      />
-    </View>
+  const { navigate } = useNavigation()
+
+  function handleOpenGame({ id, title, bannerUrl }: IGameCardProps) {
+    navigate('game', { id, title, bannerUrl })
+  }
+
+  useEffect(() => {
+    api.get<IGameCardProps[]>("games").then(setGames).catch(console.error);
+  }, []);
+
+  return (
+    <Background>
+      <SafeAreaView style={styles.container}>
+        <Image source={logoImg} style={styles.logo} />
+        <Heading
+          title="Encontre seu duo!"
+          subtitle="Selecione o game que deseja jogar..."
+        />
+
+        <FlatList
+          data={games}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <GameCard onPress={() => handleOpenGame(item)} data={item} />}
+          contentContainerStyle={styles.contentList}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+        />
+      </SafeAreaView>
+    </Background>
   );
 }
