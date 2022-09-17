@@ -1,4 +1,4 @@
-const baseurl = "http://192.168.0.160:3333";
+const baseurl = "http://192.168.18.36:3333";
 
 const makeRequest = <T>(url: string, options = {}): Promise<T> =>
   fetch(`${baseurl}${!url.startsWith("/") && "/"}${url}`, options).then(data => data.json());

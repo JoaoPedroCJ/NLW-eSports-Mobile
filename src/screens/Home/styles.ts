@@ -8,8 +8,8 @@ export const styles = StyleSheet.create({
   logo: {
     width: 214,
     height: 120,
-    marginTop: 74,
-    marginBottom: 48,
+    marginTop: 64,
+    marginBottom: 26,
   },
   contentList: {
     paddingLeft: 32,
